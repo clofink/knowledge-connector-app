@@ -27,7 +27,7 @@ export class NanoRepLoader implements Loader {
 
     logger.info('Fetching data...');
     const allArticles = await this.adapter!.getAllArticles();
-    const articles = allArticles.filter((article) => !isConversational(article));
+    const articles = allArticles.filter((article) => !this.isConversational(article));
     const labels = await this.adapter!.getAllLabels();
 
     const data = contentMapper(articles, labels);
@@ -37,9 +37,8 @@ export class NanoRepLoader implements Loader {
 
     return data;
   }
-}
 
-function isConversational(article: NanoRepArticle) {
+  private isConversational(article: NanoRepArticle) {
     let result = false;
     try {
       JSON.parse(article.body);
@@ -50,4 +49,5 @@ function isConversational(article: NanoRepArticle) {
       result = false;
     }
     return result;
+  }
 }
