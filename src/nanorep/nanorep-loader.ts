@@ -32,7 +32,7 @@ export class NanoRepLoader implements Loader {
 
     const data = contentMapper(articles, labels);
 
-    logger.info('Categories loaded: ' + data.categories.length);
+    logger.info('Labels loaded: ' + data.labels.length);
     logger.info('Documents loaded: ' + data.documents.length);
 
     return data;
