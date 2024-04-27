@@ -5,7 +5,6 @@ import { NanoRepLabel } from './model/nanorep-label.js';
 import { DocumentAlternative } from '../model/document-alternative.js';
 import { GeneratedValue } from '../utils/generated-value.js';
 import { Label } from '../model/label.js';
-import logger from '../utils/logger.js';
 import { NanoRepPhrase } from './model/nanorep-phrase.js';
 
 export function contentMapper(articles: NanoRepArticle[]): ExternalContent {
@@ -29,18 +28,27 @@ function labelMapper(label: NanoRepLabel): Label {
   };
 }
 
-function phraseMapper(oldPhrase: NanoRepPhrase): DocumentAlternative {
-  return {
-    phrase: oldPhrase.text,
-    autocomplete: oldPhrase.autoComplete
+function phraseProcessor(phrases: string[]): DocumentAlternative[] {
+  const phraseList: DocumentAlternative[] = [];
+  for (let x = 1; x < phrases.length; x++) {
+    const phrase = phrases[x];
+    try {
+      const parsedPhrase = JSON.parse(phrase) as NanoRepPhrase;
+      if (parsedPhrase.hasOwnProperty("negativeSample") && parsedPhrase.negativeSample) continue;
+      phraseList.push({phrase: parsedPhrase.text, autocomplete: parsedPhrase.autoComplete})
+    }
+    catch {
+      phraseList.push({phrase: phrase, autocomplete: true})
+    }
   }
+  return phraseList
 }
 
 function articleMapper(article: NanoRepArticle): Document {
   const id = article.id;
   const title = article.title;
   const body = article.body;
-  const phrases = article.phrasings.length > 1 ? article.phrasings.slice(1).map((item) => JSON.parse(item) as NanoRepPhrase).filter((item) => !item.negativeSample).map(phraseMapper) : null;
+  const phrases = phraseProcessor(article.phrasings);
 
   const documentVersion: DocumentVersion = {
     visible: true,
