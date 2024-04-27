@@ -43,7 +43,7 @@ function isConversational(article: NanoRepArticle) {
     let result = false;
     try {
       JSON.parse(article.body);
-      logger.warn(`${article.id} is conversational`)
+      logger.warn(`Skipping "${article.title}" (${article.id}) because it is conversational`);
       result = true;
     }
     catch {
