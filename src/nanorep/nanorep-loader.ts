@@ -27,9 +27,10 @@ export class NanoRepLoader implements Loader {
 
     logger.info('Fetching data...');
     const allArticles = await this.adapter!.getAllArticles();
-    const articles = allArticles.filter((article) => !isConversational(article))
+    const articles = allArticles.filter((article) => !isConversational(article));
+    const labels = await this.adapter!.getAllLabels();
 
-    const data = contentMapper(articles);
+    const data = contentMapper(articles, labels);
 
     logger.info('Categories loaded: ' + data.categories.length);
     logger.info('Documents loaded: ' + data.documents.length);

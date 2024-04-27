@@ -2,6 +2,8 @@ import { NanoRepConfig } from './model/nanorep-config.js';
 import { NanoRepArticle } from './model/nanorep-article.js';
 import { fetch, Response } from '../utils/web-client.js';
 import { NanoRepResponse } from './model/nanorep-response.js';
+import { NanoRepLabel } from './model/nanorep-label.js';
+import logger from '../utils/logger.js';
 
 export class NanoRepApi {
   private config: NanoRepConfig = {};
@@ -12,8 +14,16 @@ export class NanoRepApi {
 
   public async fetchAllArticles(): Promise<NanoRepArticle[]> {
     return await this.getPage<NanoRepArticle>(
-      `/api/kb/v1/export?format=json&_phrasingsKind_internal_=entities&kb=${this.config.nanorepKbId}&apiKey=${this.config.nanorepApiKey}`,
+      `/api/kb/v1/export?format=json&_phrasingsKind_internal_=entities&kb=${this.config.nanorepKbId}&apiKey=${this.config.nanorepApiKey}`
     );
+  }
+
+  public async fetchAllLabels(): Promise<NanoRepLabel[]> {
+    const url = `${this.config.nanorepBaseUrl}/api/kb/labels/v1/getUserLabels?kb=${this.config.nanorepKbId}&apiKey=${this.config.nanorepApiKey}`;
+    const response = await fetch(url);
+    await this.verifyResponse(response, url);
+    const json = (await response.json()) as NanoRepLabel[];
+    return json;
   }
 
   private async getPage<T>(endpoint: string): Promise<NanoRepArticle[]> {

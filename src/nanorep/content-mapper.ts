@@ -7,10 +7,12 @@ import { GeneratedValue } from '../utils/generated-value.js';
 import { Label } from '../model/label.js';
 import { NanoRepPhrase } from './model/nanorep-phrase.js';
 
-export function contentMapper(articles: NanoRepArticle[]): ExternalContent {
+export function contentMapper(articles: NanoRepArticle[], labels: NanoRepLabel[]): ExternalContent {
   return {
     categories: [],
-    labels: [],
+    labels: labels 
+      ? labels.map((a: NanoRepLabel) => labelMapper(a)) 
+      : [],
     documents: articles
       ? articles.map((a: NanoRepArticle) => articleMapper(a))
       : [],
@@ -24,7 +26,7 @@ function labelMapper(label: NanoRepLabel): Label {
     id: null,
     externalId: String(id),
     name,
-    color: GeneratedValue.COLOR,
+    color: label.color ? label.color : GeneratedValue.COLOR,
   };
 }
 
@@ -34,11 +36,11 @@ function phraseProcessor(phrases: string[]): DocumentAlternative[] {
     const phrase = phrases[x];
     try {
       const parsedPhrase = JSON.parse(phrase) as NanoRepPhrase;
-      if (parsedPhrase.hasOwnProperty("negativeSample") && parsedPhrase.negativeSample) continue;
-      phraseList.push({phrase: parsedPhrase.text, autocomplete: parsedPhrase.autoComplete})
+      if (parsedPhrase.negativeSample) continue;
+      phraseList.push({ phrase: parsedPhrase.text, autocomplete: parsedPhrase.autoComplete })
     }
     catch {
-      phraseList.push({phrase: phrase, autocomplete: true})
+      phraseList.push({ phrase: phrase, autocomplete: true })
     }
   }
   return phraseList
@@ -61,7 +63,10 @@ function articleMapper(article: NanoRepArticle): Document {
       },
     ],
     category: null,
-    labels: article.labels.map(labelMapper),
+    labels: article?.labels.map((label) => ({
+      id: null,
+      name: label.name,
+    })) || null,
   };
 
   return {

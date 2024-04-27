@@ -5,6 +5,7 @@ import { NanoRepApi } from './nanorep-api.js';
 import { NanoRepArticle } from './model/nanorep-article.js';
 import { Image } from '../model/image.js';
 import logger from '../utils/logger.js';
+import { NanoRepLabel } from './model/nanorep-label.js';
 
 export class NanoRepAdapter
   implements
@@ -54,7 +55,7 @@ export class NanoRepAdapter
     return Promise.reject();
   }
 
-  public getAllLabels(): Promise<unknown[]> {
-    return Promise.reject();
+  public getAllLabels(): Promise<NanoRepLabel[]> {
+    return this.api.fetchAllLabels();
   }
 }
