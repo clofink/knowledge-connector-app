@@ -11,7 +11,7 @@ export function contentMapper(articles: NanoRepArticle[], labels: NanoRepLabel[]
   return {
     categories: [],
     labels: labels 
-      ? labels.map((a: NanoRepLabel) => labelMapper(a)) 
+      ? labels.flatMap((a: NanoRepLabel) => labelMapper(a)) 
       : [],
     documents: articles
       ? articles.map((a: NanoRepArticle) => articleMapper(a))
@@ -19,15 +19,31 @@ export function contentMapper(articles: NanoRepArticle[], labels: NanoRepLabel[]
   };
 }
 
-function labelMapper(label: NanoRepLabel): Label {
-  const { id, name } = label;
+function labelMapper(label: NanoRepLabel): Label[] {
+  const labels: Label[] = [];
+  labelFlatter(label, labels)
 
-  return {
+  return labels;
+}
+
+function labelFlatter(
+  label: NanoRepLabel,
+  labels: Label[],
+) {
+  const { name, id, color } = label;
+  labels.push({
     id: null,
     externalId: String(id),
     name,
-    color: label.color ? label.color : GeneratedValue.COLOR,
-  };
+    color: color ? color : GeneratedValue.COLOR,
+  });
+  if (!label.children || label.children.length === 0) {
+    return;
+  }
+
+  label.children.forEach((child) =>
+    labelFlatter(child, labels)
+  );
 }
 
 function phraseProcessor(phrases: string[]): DocumentAlternative[] {
