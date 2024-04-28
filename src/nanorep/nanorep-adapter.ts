@@ -32,23 +32,7 @@ export class NanoRepAdapter
     articleId: string | null,
     url: string,
   ): Promise<Image | null> {
-    logger.info(`${articleId} ${url}`);
-    return null;
-    // const attachmentIdMatch = url.match(/sys_id=([^&]+)/);
-    // if (!attachmentIdMatch || !articleId) {
-    //   return null;
-    // }
-
-    // const content = await this.api.downloadAttachment(
-    //   info.result.download_link,
-    // );
-
-    // return {
-    //   url: info.result.download_link,
-    //   name: info.result.file_name,
-    //   contentType: info.result.content_type,
-    //   content,
-    // };
+    return Promise.reject();
   }
 
   public getAllCategories(): Promise<unknown[]> {
