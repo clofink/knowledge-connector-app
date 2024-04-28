@@ -32,7 +32,7 @@ export class NanoRepAdapter
     articleId: string | null,
     url: string,
   ): Promise<Image | null> {
-    return Promise.reject();
+    return null;
   }
 
   public getAllCategories(): Promise<unknown[]> {
