@@ -8,7 +8,6 @@ import { Adapter } from '../adapter/adapter.js';
 import { NanoRepArticle } from './model/nanorep-article.js';
 import { validateNonNull } from '../utils/validate-non-null.js';
 import logger from '../utils/logger.js';
-import { NanoRepContext } from './model/nanorep-context.js';
 
 /**
  * NanoRep is a specific {@Link Loader} implementation for fetching data from NanoRep API
