@@ -56,7 +56,7 @@ function phraseProcessor(phrases: string[]): DocumentAlternative[] | null {
       phraseList.push({ phrase: parsedPhrase.text.trim(), autocomplete: parsedPhrase.autoComplete !== null ? parsedPhrase.autoComplete : true })
     }
     catch {
-      phraseList.push({ phrase: phrase, autocomplete: true })
+      phraseList.push({ phrase: phrase.trim(), autocomplete: true })
     }
   }
   return phraseList.length > 0 ? phraseList : null;
