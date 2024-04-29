@@ -4,4 +4,5 @@ export interface NanoRepConfig extends Config {
   nanorepBaseUrl?: string;
   nanorepApiKey?: string;
   nanorepKbId?: string;
+  nanorepContextFilter?: string;
 }
