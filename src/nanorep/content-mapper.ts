@@ -79,7 +79,7 @@ function articleMapper(article: NanoRepArticle): Document {
       },
     ],
     category: null,
-    labels: article?.labels.map((label) => ({
+    labels: article?.labels?.map((label) => ({
       id: null,
       name: label.name,
     })) || null,
