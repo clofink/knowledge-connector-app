@@ -46,25 +46,25 @@ function labelFlatter(
   );
 }
 
-function phraseProcessor(phrases: string[]): DocumentAlternative[] {
+function phraseProcessor(phrases: string[]): DocumentAlternative[] | null {
   const phraseList: DocumentAlternative[] = [];
   for (let x = 1; x < phrases.length; x++) {
     const phrase = phrases[x];
     try {
       const parsedPhrase = JSON.parse(phrase) as NanoRepPhrase;
       if (parsedPhrase.negativeSample) continue;
-      phraseList.push({ phrase: parsedPhrase.text, autocomplete: parsedPhrase.autoComplete })
+      phraseList.push({ phrase: parsedPhrase.text, autocomplete: parsedPhrase.autoComplete !== null ? parsedPhrase.autoComplete : true })
     }
     catch {
       phraseList.push({ phrase: phrase, autocomplete: true })
     }
   }
-  return phraseList
+  return phraseList.length > 0 ? phraseList : null;
 }
 
 function articleMapper(article: NanoRepArticle): Document {
   const id = article.id;
-  const title = article.title;
+  const title = article.title.trim();
   const body = article.body;
   const phrases = phraseProcessor(article.phrasings);
 
