@@ -78,7 +78,12 @@ export class ImageProcessor implements Processor {
     imageBlock: DocumentBodyImageBlock,
   ): Promise<void> {
     logger.debug('processing image block ' + imageBlock.image.url);
-    const image = await this.fetchImage(articleId, imageBlock.image.url);
+    let image;
+    try {
+      image = await this.fetchImage(articleId, imageBlock.image.url);
+    } catch (error) {
+      logger.warn(`Failed to fetch image [${imageBlock.image.url}] with error [${error}]`)
+    };
 
     if (!image) {
       logger.warn(
