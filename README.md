@@ -69,6 +69,17 @@ SERVICENOW_USERNAME=
 SERVICENOW_PASSWORD=
 ```
 
+### Configure Nanorep as source
+
+```
+NANOREP_BASE_URL=
+# The base url for Nanorep API (eg. https://<accountName>.nanorep.co)
+NANOREP_KB_ID=
+NANOREP_API_KEY=
+NANOREP_CONTEXT_FILTER=
+# <ContextCategory>:<ContextValue>|<ContextValue>,<ContextCategory>:<ContextValue>
+```
+
 ### Configure Genesys Cloud as source
 
 ```

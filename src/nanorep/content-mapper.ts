@@ -53,10 +53,10 @@ function phraseProcessor(phrases: string[]): DocumentAlternative[] | null {
     try {
       const parsedPhrase = JSON.parse(phrase) as NanoRepPhrase;
       if (parsedPhrase.negativeSample) continue;
-      phraseList.push({ phrase: parsedPhrase.text, autocomplete: parsedPhrase.autoComplete !== null ? parsedPhrase.autoComplete : true })
+      phraseList.push({ phrase: parsedPhrase.text.trim(), autocomplete: parsedPhrase.autoComplete !== null ? parsedPhrase.autoComplete : true })
     }
     catch {
-      phraseList.push({ phrase: phrase, autocomplete: true })
+      phraseList.push({ phrase: phrase.trim(), autocomplete: true })
     }
   }
   return phraseList.length > 0 ? phraseList : null;
