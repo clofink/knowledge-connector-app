@@ -49,7 +49,7 @@ export class NanoRepLoader implements Loader {
     let result = false;
     try {
       JSON.parse(article.body);
-      logger.warn(`Skipping article [${article.id}] because is conversational`);
+      logger.warn(`Skipping article [${article.id}] because it is conversational`);
       this.conversationalCount++;
       result = true;
     }
