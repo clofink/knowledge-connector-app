@@ -49,6 +49,7 @@ export class NanoRepLoader implements Loader {
     let result = false;
     try {
       JSON.parse(article.body);
+      logger.warn(`Skipping article [${article.id}] because is conversational`);
       this.conversationalCount++;
       result = true;
     }
@@ -63,7 +64,10 @@ export class NanoRepLoader implements Loader {
     const articleCategories = article.contextInfo!.filter(e => contextFilters.some(obj => Object.prototype.hasOwnProperty.call(obj, e.id)));
     const matchingCategories = articleCategories.filter(e => contextFilters.some(obj => obj[e.id].toLowerCase().split("|").some(val => e.value.toLowerCase().split("|").some(artVal => artVal === val))));
     const doesMatchContext = articleCategories.length === matchingCategories.length;
-    if (!doesMatchContext) this.contextFiltered++;
+    if (!doesMatchContext) {
+      logger.warn(`Skipping article [${article.id}] because it does not match the context filter`);
+      this.contextFiltered++;
+    }
     return doesMatchContext;
   }
   
