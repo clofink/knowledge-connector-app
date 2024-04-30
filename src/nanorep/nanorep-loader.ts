@@ -32,7 +32,7 @@ export class NanoRepLoader implements Loader {
     logger.info('Fetching data...');
     const contextFilters = this.processContextFilters();
     const allArticles = await this.adapter!.getAllArticles();
-    const articles = allArticles.filter((article) => !this.isConversational(article) && this.matchesContext(article, contextFilters));
+    const articles = allArticles.filter((article) => !this.isConversational(article) && this.matchesContext(article, contextFilters) && this.isTitleValid(article));
     const labels = await this.adapter!.getAllLabels();
 
     const data = contentMapper(articles, labels);
@@ -60,7 +60,7 @@ export class NanoRepLoader implements Loader {
 
   private matchesContext(article: NanoRepArticle, contextFilters: Record<string, string>[]): boolean {
     if (!article.contextInfo) return true;
-    const articleCategories = article.contextInfo!.filter(e => contextFilters.some(obj => obj.hasOwnProperty(e.id)));
+    const articleCategories = article.contextInfo!.filter(e => contextFilters.some(obj => Object.prototype.hasOwnProperty.call(obj, e.id)));
     const matchingCategories = articleCategories.filter(e => contextFilters.some(obj => obj[e.id].toLowerCase().split("|").some(val => e.value.toLowerCase().split("|").some(artVal => artVal === val))));
     const doesMatchContext = articleCategories.length === matchingCategories.length;
     if (!doesMatchContext) this.contextFiltered++;
@@ -72,5 +72,14 @@ export class NanoRepLoader implements Loader {
     const contextFilters = this.config!.nanorepContextFilter!.split(",");
     const filters = contextFilters.map((context) => {const parts = context.split(":"); return {[parts[0]]: parts[1]}});
     return filters;
+  }
+
+  private isTitleValid(article: NanoRepArticle): boolean {
+    const title = article.title.trim();
+    if (!title || title.length < 3 || !/(?!^ +$)^[^~`^*=|<>]+$/.test(title)) {
+      logger.warn(`Skipping article [${article.id}] because it has an invalid title [${title}]`);
+      return false;
+    }
+    return true;
   }
 }
